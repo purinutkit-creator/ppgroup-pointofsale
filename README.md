@@ -40,11 +40,11 @@ docker run -d -p 3000:3000 -v queue-data:/data --name queue-kiosk queue-kiosk
 
 ### วิธีที่ 1: Render (แนะนำ — ไม่ต้องดูแลเซิร์ฟเวอร์, ได้ HTTPS อัตโนมัติ)
 
-ไฟล์ `render.yaml` ตั้งค่าไว้ครบแล้ว (Docker, ภูมิภาค Singapore, Disk ถาวร 1 GB สำหรับฐานข้อมูล, Health check)
+ไฟล์ `render.yaml` ตั้งค่าไว้ครบแล้ว (Node.js runtime, ภูมิภาค Singapore, Disk ถาวร 1 GB สำหรับฐานข้อมูล, Health check)
 
 1. สมัคร/เข้าสู่ระบบ https://dashboard.render.com แล้วเชื่อมบัญชี GitHub
 2. กด **New → Blueprint** → เลือก repo `ppgroup-queqemanagement` → เลือก branch ที่มีโค้ด → **Apply**
-3. รอ build ประมาณ 3–5 นาที จะได้ URL เช่น `https://queue-kiosk.onrender.com`
+3. รอ build ประมาณ 3–5 นาที จะได้ URL เช่น `https://ppgroup-queue.onrender.com`
 4. เปิด `https://<URL>/admin` → สร้างบัญชีผู้ดูแลระบบ → เริ่มตั้งค่าร้าน
 
 > ใช้แพ็กเกจ **Starter** ขึ้นไป (ประมาณ $7/เดือน) เพราะต้องมี Disk ถาวร — แพ็กเกจฟรีจะลบฐานข้อมูลทุกครั้งที่รีสตาร์ท

@@ -1,20 +1,27 @@
 # Render Blueprint — https://render.com/docs/blueprint-spec
 # Deploy: Render Dashboard → New → Blueprint → select this repository.
+# Uses Render's native Node.js runtime (the Dockerfile is for VPS / docker-compose).
 services:
   - type: web
-    name: queue-kiosk
-    runtime: docker
+    name: ppgroup-queue
+    runtime: node
     plan: starter            # a paid instance is required for the persistent disk below
     region: singapore        # closest Render region to Thailand
+    buildCommand: npm ci --omit=dev
+    startCommand: node server/index.js
     healthCheckPath: /healthz
     envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
       - key: DATA_DIR
-        value: /data
+        value: /var/data
       - key: TRUST_PROXY
         value: "true"
       - key: COOKIE_SECURE
         value: "true"
     disk:
       name: queue-data       # SQLite database lives here and survives deploys/restarts
-      mountPath: /data
+      mountPath: /var/data
       sizeGB: 1
