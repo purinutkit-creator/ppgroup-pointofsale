@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ระบบบัตรคิวร้านอาหาร</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <style>
+    body { min-height: 100vh; display: grid; place-items: center; padding: 16px;
+      background: radial-gradient(900px 500px at 90% -10%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 60%), var(--bg); }
+    main { width: min(880px, 100%); }
+    h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); margin: 0 0 4px; }
+    .lead { color: var(--ink-2); margin: 0 0 24px; font-size: 1.1rem; }
+    .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+    .tile { display: flex; flex-direction: column; gap: 6px; padding: 22px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); text-decoration: none; color: inherit; box-shadow: var(--shadow); transition: transform .1s; }
+    .tile:hover { transform: translateY(-2px); }
+    .tile .ico { font-size: 2rem; }
+    .tile b { font-size: 1.2rem; }
+    .tile span { color: var(--ink-3); font-size: .92rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1 id="store">ระบบบัตรคิวร้านอาหาร</h1>
+    <p class="lead">เลือกหน้าที่ต้องการเปิดบนอุปกรณ์นี้</p>
+    <div class="tiles">
+      <a class="tile" href="/kiosk"><span class="ico">🎫</span><b>ตู้กดบัตรคิว</b><span>Kiosk / Tablet / Touch Screen</span></a>
+      <a class="tile" href="/admin"><span class="ico">🧑‍🍳</span><b>Admin / Staff</b><span>จัดการและเรียกคิว ตั้งค่าร้าน</span></a>
+      <a class="tile" href="/display"><span class="ico">📺</span><b>Queue Display</b><span>หน้าจอบอกคิวสำหรับ TV</span></a>
+    </div>
+  </main>
+  <script type="module">
+    import { api, applyTheme } from '/js/common.js';
+    api('/api/kiosk/config').then((c) => {
+      applyTheme(c.store.theme_color);
+      document.getElementById('store').textContent = c.store.name;
+      document.title = c.store.name;
+    }).catch(() => {});
+  </script>
+</body>
+</html>

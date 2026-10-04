@@ -1,0 +1,115 @@
+/* Queue Display — designed for 16:9 TVs/monitors, readable from a distance.
+   Sizes use vmin/vh so the layout scales with the screen. */
+body.display {
+  --d-bg: #111014;
+  --d-panel: #1C1B21;
+  --d-panel-2: #26252D;
+  --d-ink: #ffffff;
+  --d-ink-2: #B9B6C3;
+  background: var(--d-bg);
+  color: var(--d-ink);
+  overflow: hidden;
+  height: 100vh; height: 100dvh;
+  cursor: none;
+}
+body.display.show-cursor { cursor: default; }
+
+.d-stage {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 1.6vh;
+  /* TV safe area (overscan) */
+  padding: max(2.2vh, env(safe-area-inset-top)) max(2.2vw, env(safe-area-inset-right)) max(1.8vh, env(safe-area-inset-bottom)) max(2.2vw, env(safe-area-inset-left));
+}
+
+/* ---------- header ---------- */
+.d-header {
+  display: flex; align-items: center; gap: 2vw;
+  background: var(--primary); color: var(--primary-ink);
+  border-radius: 2vh; padding: 1.4vh 2.4vw; min-height: 10vh;
+  box-shadow: 0 1vh 4vh color-mix(in srgb, var(--primary) 35%, transparent);
+}
+.d-logo { height: 7.5vh; width: auto; border-radius: 1.2vh; background: #fff; padding: .4vh; object-fit: contain; }
+.d-store { flex: 1; margin: 0; font-size: min(6.4vh, 4.2vw); font-weight: 800; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.d-clock { font-size: min(5.2vh, 3.4vw); font-weight: 700; opacity: .95; }
+
+/* ---------- main ---------- */
+.d-main { display: grid; grid-template-columns: 38fr 62fr; gap: 1.6vw; min-height: 0; }
+
+.d-queues { display: grid; gap: 1.4vh; min-height: 0; grid-auto-rows: 1fr; }
+.d-row {
+  display: grid; grid-template-columns: minmax(0, 24%) 1fr; align-items: stretch;
+  background: var(--d-panel); border-radius: 2vh; overflow: hidden; min-height: 0;
+  border: .3vh solid transparent;
+  transition: border-color .3s, background .3s;
+}
+.d-letter {
+  background: var(--d-panel-2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: .5vh .4vw;
+}
+.d-letter b { font-size: min(9vh, 5.2vw); line-height: 1; font-weight: 800; color: var(--primary); }
+.d-letter small { font-size: min(2.2vh, 1.3vw); color: var(--d-ink-2); margin-top: .6vh; font-weight: 600; white-space: nowrap; }
+.d-calls { display: flex; flex-direction: column; justify-content: center; padding: 0 1.6vw; min-width: 0; gap: .3vh; }
+.d-now { display: flex; align-items: baseline; justify-content: space-between; gap: 1vw; min-width: 0; }
+.d-number { font-size: min(11vh, 6.2vw); font-weight: 800; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+.d-number.empty { color: #4B4955; }
+.d-waiting { font-size: min(2.4vh, 1.4vw); color: var(--d-ink-2); white-space: nowrap; font-weight: 600; }
+.d-waiting b { color: var(--d-ink); font-size: 1.25em; }
+.d-prev { display: flex; gap: 1.2vw; flex-wrap: nowrap; overflow: hidden; }
+.d-prev span { font-size: min(3.6vh, 2vw); font-weight: 700; color: var(--d-ink-2); font-variant-numeric: tabular-nums; }
+.d-label { font-size: min(2vh, 1.15vw); color: var(--d-ink-2); font-weight: 600; }
+
+.d-row.flash { border-color: var(--primary); animation: d-flash 1s ease-in-out infinite; }
+.d-row.flash .d-number { color: var(--primary); }
+@keyframes d-flash {
+  0%, 100% { background: var(--d-panel); }
+  50% { background: color-mix(in srgb, var(--primary) 32%, var(--d-panel)); }
+}
+
+/* ---------- promo ---------- */
+.d-promo { position: relative; background: var(--d-panel); border-radius: 2vh; overflow: hidden; min-height: 0; }
+.d-slide { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease; }
+.d-slide.on { opacity: 1; }
+.d-slide.contain { object-fit: contain; }
+.d-slide.cover { object-fit: cover; }
+.d-promo-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; text-align: center;
+  background: radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--primary) 30%, transparent), transparent 60%), var(--d-panel); }
+.d-promo-empty img { max-height: 28vh; max-width: 60%; object-fit: contain; border-radius: 2vh; }
+.d-promo-empty div { font-size: min(7vh, 4vw); font-weight: 800; }
+.d-promo-empty small { font-size: min(3.4vh, 2vw); color: var(--d-ink-2); }
+
+/* ---------- marquee ---------- */
+.d-marquee {
+  background: var(--d-panel); border-radius: 1.4vh; overflow: hidden; white-space: nowrap;
+  border-left: .8vh solid var(--primary);
+  display: flex; align-items: center; min-height: 7vh;
+}
+.d-marquee-track { display: inline-block; padding-left: 100%; font-weight: 600; animation: d-scroll linear infinite; will-change: transform; }
+@keyframes d-scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+/* ---------- call popup ---------- */
+.d-popup { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: grid; place-items: center; z-index: 50; animation: fade .2s ease; }
+.d-popup-card { background: var(--primary); color: var(--primary-ink); border-radius: 4vh; padding: 4vh 8vw; text-align: center; box-shadow: 0 4vh 12vh rgba(0,0,0,.5); animation: d-pop .45s cubic-bezier(.2, 1.5, .4, 1); }
+.d-popup-label { font-size: min(6vh, 3.4vw); font-weight: 700; }
+.d-popup-number { font-size: min(30vh, 17vw); font-weight: 800; line-height: 1; letter-spacing: .03em; }
+.d-popup-sub { font-size: min(5vh, 3vw); font-weight: 600; opacity: .95; }
+@keyframes d-pop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.d-sound { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.7); color: #fff; border: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; font-size: min(4vh, 2.4vw); font-weight: 700; cursor: pointer; }
+
+.d-tools { position: fixed; right: 1.4vw; top: 1.4vh; z-index: 40; display: flex; gap: 8px; align-items: center; opacity: 0; transition: opacity .3s; pointer-events: none; }
+body.show-cursor .d-tools { opacity: 1; pointer-events: auto; }
+.d-tools .btn { background: rgba(255,255,255,.92); color: #111; border: 0; }
+.d-conn { display: inline-flex; gap: 8px; align-items: center; background: rgba(0,0,0,.55); color: #fff; padding: 6px 12px; border-radius: 99px; font-size: 14px; }
+
+/* portrait screens / phones: stack */
+@media (max-aspect-ratio: 1/1) {
+  .d-main { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .d-queues { grid-auto-rows: minmax(12vh, auto); }
+  .d-number { font-size: 9vh; }
+  .d-letter b { font-size: 7vh; }
+  .d-letter small, .d-waiting { font-size: 1.8vh; }
+  .d-prev span { font-size: 2.8vh; }
+  .d-store { font-size: 4.5vh; }
+}

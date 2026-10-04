@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#E4572E">
+  <meta name="robots" content="noindex, nofollow">
+  <title>ติดตามคิว</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/track.css">
+</head>
+<body class="track">
+  <header class="t-header">
+    <img id="logo" alt="" hidden>
+    <div class="t-store" id="storeName">&nbsp;</div>
+    <span class="t-live"><span class="dot" id="liveDot"></span><span id="liveText">กำลังเชื่อมต่อ</span></span>
+  </header>
+
+  <main class="t-main" id="main">
+    <div class="t-loading" id="loading"><div class="spinner"></div></div>
+
+    <section id="waitingView" hidden>
+      <div class="t-card t-hero">
+        <div class="t-label">หมายเลขคิวของคุณ</div>
+        <div class="t-number" id="number"></div>
+        <div class="t-meta"><span id="pax"></span><span id="name"></span></div>
+        <div class="t-status" id="status"></div>
+      </div>
+
+      <div class="t-card" id="aheadCard">
+        <div class="t-label">มีคิวก่อนหน้าคุณ</div>
+        <div class="t-ahead"><b id="ahead">0</b> คิว</div>
+        <div class="t-progress"><div class="t-bar" id="bar"></div></div>
+        <div class="t-trail" id="trail"></div>
+        <p class="t-hint" id="hint"></p>
+      </div>
+
+      <div class="t-card t-info">
+        <div><span class="muted">เวลาออกบัตร</span><b id="created"></b></div>
+        <div><span class="muted">รอมาแล้ว</span><b id="waited"></b></div>
+      </div>
+
+      <div class="t-card t-alerts" id="alertCard">
+        <button class="btn btn-soft btn-block" id="enableAlerts" type="button">🔔 เปิดเสียง/การแจ้งเตือนเมื่อถึงคิว</button>
+        <p class="t-hint" id="alertHint">เปิดหน้านี้ค้างไว้ ระบบจะอัปเดตอัตโนมัติโดยไม่ต้องรีเฟรช</p>
+      </div>
+    </section>
+
+    <section class="t-called" id="calledView" hidden>
+      <div class="t-called-inner">
+        <div class="t-called-icon">🔔</div>
+        <h1>ถึงคิวของคุณแล้ว</h1>
+        <div class="t-called-number" id="calledNumber"></div>
+        <p>กรุณาติดต่อพนักงาน</p>
+        <div class="t-called-pax" id="calledPax"></div>
+      </div>
+    </section>
+
+    <section class="t-final" id="finalView" hidden>
+      <div class="t-card t-hero">
+        <div class="t-label">หมายเลขคิว</div>
+        <div class="t-number" id="finalNumber"></div>
+        <div class="t-status" id="finalStatus"></div>
+        <p class="t-hint" id="finalText"></p>
+      </div>
+    </section>
+
+    <section class="t-card t-notfound" id="notFound" hidden>
+      <h2>ไม่พบข้อมูลคิว</h2>
+      <p class="muted">ลิงก์อาจไม่ถูกต้องหรือหมดอายุ กรุณาสแกน QR Code บนบัตรคิวอีกครั้ง</p>
+    </section>
+  </main>
+  <script type="module" src="/js/track.js"></script>
+</body>
+</html>

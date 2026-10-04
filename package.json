@@ -1,0 +1,30 @@
+{
+  "name": "restaurant-queue-kiosk",
+  "version": "1.0.0",
+  "description": "Restaurant Queue Kiosk System — kiosk, staff dashboard, real-time queue display, thermal ticket printing and QR customer tracking",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "agent": "node agent/print-agent.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/purinutkit-creator/ppgroup-queqemanagement.git"
+  },
+  "bugs": {
+    "url": "https://github.com/purinutkit-creator/ppgroup-queqemanagement/issues"
+  },
+  "homepage": "https://github.com/purinutkit-creator/ppgroup-queqemanagement#readme",
+  "dependencies": {
+    "@fontsource/noto-sans-thai": "^5.3.0",
+    "better-sqlite3": "^13.0.3",
+    "express": "^4.22.3",
+    "qrcode": "^1.5.4"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=18.17"
+  }
+}

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#E4572E">
+  <title>Queue Display</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/display.css">
+</head>
+<body class="display">
+  <div class="d-stage" id="stage">
+    <header class="d-header">
+      <img class="d-logo" id="logo" alt="" hidden>
+      <h1 class="d-store" id="storeName">&nbsp;</h1>
+      <div class="d-clock mono" id="clock"></div>
+    </header>
+
+    <main class="d-main">
+      <section class="d-queues" id="queues" aria-live="polite"></section>
+      <section class="d-promo" id="promo">
+        <div class="d-promo-empty" id="promoEmpty">
+          <img id="promoLogo" alt="" hidden>
+          <div id="promoStore"></div>
+          <small>ยินดีต้อนรับ</small>
+        </div>
+      </section>
+    </main>
+
+    <footer class="d-marquee" id="marquee" hidden>
+      <div class="d-marquee-track" id="marqueeTrack"></div>
+    </footer>
+  </div>
+
+  <div class="d-popup" id="popup" hidden>
+    <div class="d-popup-card">
+      <div class="d-popup-label">ขอเชิญหมายเลข</div>
+      <div class="d-popup-number" id="popupNumber"></div>
+      <div class="d-popup-sub">กรุณาติดต่อพนักงาน</div>
+    </div>
+  </div>
+
+  <button class="d-sound" id="soundOverlay" type="button" hidden>
+    <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+    <span>แตะหน้าจอเพื่อเปิดเสียงเรียกคิว</span>
+  </button>
+
+  <div class="d-tools" id="tools">
+    <span class="d-conn"><span class="dot" id="connDot"></span><span id="deviceName"></span></span>
+    <button class="btn btn-sm" id="fsBtn" type="button">เต็มจอ</button>
+    <button class="btn btn-sm" id="testSoundBtn" type="button">ทดสอบเสียง</button>
+  </div>
+
+  <script type="module" src="/js/display.js"></script>
+</body>
+</html>

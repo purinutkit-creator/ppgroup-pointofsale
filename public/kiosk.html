@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#E4572E">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>ตู้กดบัตรคิว</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/kiosk.css">
+</head>
+<body class="kiosk">
+  <div class="k-topbar">
+    <div class="k-brand">
+      <img id="logoSmall" alt="" hidden>
+      <span id="storeSmall"></span>
+    </div>
+    <div class="k-clock mono" id="clock"></div>
+    <button class="k-printer" id="printerBadge" type="button" title="สถานะเครื่องพิมพ์">
+      <span class="dot" id="printerDot"></span><span id="printerText">เครื่องพิมพ์</span>
+    </button>
+    <button class="k-icon" id="fullscreenBtn" type="button" title="เต็มจอ" aria-label="เต็มจอ">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+  </div>
+
+  <!-- 1. Welcome -->
+  <section class="k-screen k-home" id="screenHome">
+    <div class="k-home-inner">
+      <img class="k-logo" id="logo" alt="" hidden>
+      <h1 class="k-store" id="storeName">&nbsp;</h1>
+      <p class="k-welcome" id="welcome"></p>
+      <button class="k-start" id="startBtn" type="button">
+        <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 5v12" stroke-dasharray="2 2"/></svg>
+        <span id="startLabel">รับบัตรคิว</span>
+      </button>
+      <div class="k-waiting" id="waitingSummary"></div>
+    </div>
+  </section>
+
+  <!-- 2. Party size -->
+  <section class="k-screen" id="screenPax" hidden>
+    <div class="k-panel">
+      <h2 class="k-title">กรุณาเลือกจำนวนลูกค้า</h2>
+      <div class="k-pax-grid" id="paxGrid"></div>
+      <div class="k-stepper">
+        <button class="k-step" id="paxMinus" type="button" aria-label="ลดจำนวน">−</button>
+        <div class="k-step-value"><span id="paxValue">1</span><small>ท่าน</small></div>
+        <button class="k-step" id="paxPlus" type="button" aria-label="เพิ่มจำนวน">+</button>
+      </div>
+      <div class="k-group-info" id="groupInfo"></div>
+      <div class="k-overlimit" id="overLimit" hidden></div>
+      <div class="k-actions">
+        <button class="btn btn-lg k-back" data-back type="button">ย้อนกลับ</button>
+        <button class="btn btn-lg btn-primary grow" id="paxNext" type="button">ถัดไป</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Customer info -->
+  <section class="k-screen" id="screenInfo" hidden>
+    <div class="k-panel">
+      <h2 class="k-title">ข้อมูลลูกค้า</h2>
+      <div class="k-summary" id="infoSummary"></div>
+      <form id="infoForm" autocomplete="off" novalidate>
+        <div class="field">
+          <label for="custName" id="nameLabel">ชื่อลูกค้า</label>
+          <input class="input k-input" id="custName" maxlength="60" placeholder="เช่น คุณสมชาย" enterkeyhint="next">
+        </div>
+        <div class="field" id="phoneField">
+          <label for="custPhone">เบอร์โทรศัพท์ <span class="muted">(ไม่บังคับ)</span></label>
+          <input class="input k-input mono" id="custPhone" inputmode="tel" maxlength="15" placeholder="0XX-XXX-XXXX" enterkeyhint="done">
+          <div class="k-keypad" id="keypad"></div>
+        </div>
+        <label class="check k-sms" id="smsField" hidden>
+          <input type="checkbox" id="smsOptIn">
+          <span>ส่ง SMS แจ้งเตือนเมื่อถึงคิวของฉัน</span>
+        </label>
+        <div class="k-error" id="infoError" hidden></div>
+        <div class="k-actions">
+          <button class="btn btn-lg k-back" data-back type="button">ย้อนกลับ</button>
+          <button class="btn btn-lg btn-primary grow" id="confirmBtn" type="submit">ยืนยันรับบัตรคิว</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- 4. Done -->
+  <section class="k-screen" id="screenDone" hidden>
+    <div class="k-panel k-done">
+      <div class="k-done-check">
+        <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <h2 class="k-done-title">รับบัตรคิวเรียบร้อย</h2>
+      <div class="k-done-body">
+        <div class="k-ticket">
+          <div class="k-ticket-label">หมายเลขคิว</div>
+          <div class="k-ticket-number" id="doneNumber">—</div>
+          <div class="k-ticket-pax" id="donePax"></div>
+          <div class="k-ticket-name" id="doneName"></div>
+          <div class="k-ticket-ahead">มีคิวก่อนหน้าคุณ <b id="doneAhead">0</b> คิว</div>
+        </div>
+        <div class="k-done-qr">
+          <img id="doneQr" alt="QR Code ติดตามคิว">
+          <div>สแกนเพื่อติดตามคิว<br><small class="muted">ด้วยกล้องโทรศัพท์</small></div>
+        </div>
+      </div>
+      <div class="k-print" id="printStatus"></div>
+      <div class="k-print-error" id="printError" hidden>
+        <b>สร้างคิวเรียบร้อย แต่ไม่สามารถพิมพ์บัตรคิวได้</b>
+        <div class="muted" id="printErrorDetail"></div>
+        <div class="row" style="justify-content:center;margin-top:12px">
+          <button class="btn btn-lg" id="connectPrinterBtn" type="button">เชื่อมต่อเครื่องพิมพ์</button>
+          <button class="btn btn-lg btn-primary" id="retryPrintBtn" type="button">พิมพ์อีกครั้ง</button>
+        </div>
+      </div>
+      <div class="k-actions">
+        <button class="btn btn-lg" id="reprintBtn" type="button">พิมพ์อีกครั้ง</button>
+        <button class="btn btn-lg btn-primary grow" id="doneBtn" type="button">เสร็จสิ้น <span class="k-countdown" id="countdown"></span></button>
+      </div>
+    </div>
+  </section>
+
+  <script type="module" src="/js/kiosk.js"></script>
+</body>
+</html>

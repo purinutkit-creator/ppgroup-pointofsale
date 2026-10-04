@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#E4572E">
+  <meta name="robots" content="noindex, nofollow">
+  <title>จัดการคิว · Admin</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin">
+  <!-- auth -->
+  <div class="auth" id="authView" hidden>
+    <form class="auth-card card" id="authForm" autocomplete="on">
+      <div class="auth-logo">Q</div>
+      <h1 id="authTitle">เข้าสู่ระบบ</h1>
+      <p class="muted" id="authSubtitle">สำหรับผู้ดูแลระบบและพนักงาน</p>
+      <div class="field" data-setup hidden>
+        <label for="setupStore">ชื่อร้าน</label>
+        <input class="input" id="setupStore" placeholder="เช่น ร้านอร่อยดี">
+      </div>
+      <div class="field" data-setup hidden>
+        <label for="setupName">ชื่อที่แสดง</label>
+        <input class="input" id="setupName" placeholder="เช่น ผู้จัดการร้าน">
+      </div>
+      <div class="field">
+        <label for="authUser">ชื่อผู้ใช้</label>
+        <input class="input" id="authUser" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="authPass">รหัสผ่าน</label>
+        <input class="input" id="authPass" type="password" autocomplete="current-password" required>
+        <span class="hint" data-setup hidden>อย่างน้อย 8 ตัวอักษร</span>
+      </div>
+      <div class="auth-error" id="authError" hidden></div>
+      <button class="btn btn-primary btn-lg btn-block" id="authSubmit" type="submit">เข้าสู่ระบบ</button>
+    </form>
+  </div>
+
+  <!-- app -->
+  <div class="app" id="appView" hidden>
+    <aside class="side" id="side">
+      <div class="side-brand">
+        <img id="brandLogo" alt="" hidden>
+        <div class="side-brand-text"><b id="brandName"></b><small>ระบบจัดการคิว</small></div>
+      </div>
+      <nav class="side-nav" id="nav"></nav>
+      <div class="side-foot">
+        <div class="side-user"><span class="avatar" id="userAvatar"></span><div><b id="userName"></b><small id="userRole"></small></div></div>
+        <div class="row" style="gap:6px">
+          <button class="btn btn-sm btn-ghost" id="pwBtn" type="button">เปลี่ยนรหัสผ่าน</button>
+          <button class="btn btn-sm btn-ghost" id="logoutBtn" type="button">ออกจากระบบ</button>
+        </div>
+      </div>
+    </aside>
+    <div class="side-backdrop" id="sideBackdrop"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-sm menu-btn" id="menuBtn" type="button" aria-label="เมนู">☰</button>
+        <h1 id="pageTitle"></h1>
+        <div class="spacer"></div>
+        <span class="live" id="live"><span class="dot"></span><span>Real-time</span></span>
+        <a class="btn btn-sm" href="/kiosk" target="_blank" rel="noopener">เปิด Kiosk</a>
+        <a class="btn btn-sm" href="/display" target="_blank" rel="noopener">เปิด Display</a>
+      </header>
+      <div class="content" id="content"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/admin.js"></script>
+</body>
+</html>

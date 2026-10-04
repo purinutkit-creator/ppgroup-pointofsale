@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Queue Display Connection</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <style>
+    body { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 16px;
+      background: radial-gradient(900px 500px at 80% -10%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 60%), #15141A; color: #fff; }
+    .pair { width: min(640px, 100%); background: #1F1E25; border-radius: 28px; padding: clamp(24px, 5vw, 48px); text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+    .pair h1 { margin: 0 0 6px; font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 800; }
+    .pair p { margin: 0 0 26px; color: #B9B6C3; font-size: 1.1rem; }
+    .boxes { display: flex; gap: clamp(6px, 1.6vw, 14px); justify-content: center; margin-bottom: 22px; }
+    .boxes input { width: clamp(44px, 11vw, 76px); height: clamp(60px, 14vw, 96px); border-radius: 16px; border: 2px solid #3A3943; background: #121117; color: #fff;
+      font-size: clamp(2rem, 6vw, 3.2rem); font-weight: 800; text-align: center; caret-color: var(--primary); }
+    .boxes input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 30%, transparent); }
+    .err { min-height: 1.6em; color: #FF8A8A; font-weight: 600; margin-bottom: 10px; }
+    .steps { text-align: left; margin-top: 28px; color: #B9B6C3; font-size: .95rem; background: #17161C; border-radius: 16px; padding: 14px 18px 14px 36px; }
+    .steps li { margin: 4px 0; }
+    .btn-lg { width: 100%; min-height: 64px; font-size: 1.3rem; }
+  </style>
+</head>
+<body>
+  <main class="pair">
+    <h1>Queue Display Connection</h1>
+    <p>กรอกรหัสเชื่อมต่อจากหน้า Admin เพื่อใช้เครื่องนี้เป็นหน้าจอบอกคิว</p>
+    <form id="form" autocomplete="off">
+      <label class="label" style="color:#B9B6C3;display:block;margin-bottom:10px">กรอกรหัสเชื่อมต่อ</label>
+      <div class="boxes" id="boxes"></div>
+      <div class="err" id="err" role="alert"></div>
+      <button class="btn btn-primary btn-lg" id="submit" type="submit">เชื่อมต่อ</button>
+    </form>
+    <ol class="steps">
+      <li>เข้าสู่ระบบ Admin บนเครื่องใดก็ได้ → เมนู “หน้าจอบอกคิว”</li>
+      <li>กด “เชื่อมต่อหน้าจอบอกคิว” → “Generate Code”</li>
+      <li>กรอกรหัสที่ได้ในหน้านี้ภายใน 5 นาที (ใช้ได้ครั้งเดียว)</li>
+    </ol>
+  </main>
+  <script type="module">
+    import { api } from '/js/common.js';
+    const LEN = 6;
+    const boxes = document.getElementById('boxes');
+    const err = document.getElementById('err');
+    const submit = document.getElementById('submit');
+    if (new URLSearchParams(location.search).get('reason') === 'revoked') err.textContent = 'หน้าจอนี้ถูกยกเลิกการเชื่อมต่อ กรุณาเชื่อมต่อใหม่';
+    try { if (localStorage.getItem('qms.display.token')) location.replace('/display'); } catch {}
+    for (let i = 0; i < LEN; i++) {
+      const inp = document.createElement('input');
+      inp.inputMode = 'numeric'; inp.autocomplete = 'one-time-code'; inp.setAttribute('aria-label', `หลักที่ ${i + 1}`);
+      boxes.appendChild(inp);
+    }
+    const inputs = [...boxes.children];
+    inputs[0].focus();
+    inputs.forEach((inp, i) => {
+      inp.addEventListener('input', () => {
+        const digits = inp.value.replace(/\D/g, '');
+        if (digits.length > 1) { fill(digits, i); return; }
+        inp.value = digits;
+        if (digits && i < LEN - 1) inputs[i + 1].focus();
+        if (code().length === LEN) send();
+      });
+      inp.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !inp.value && i > 0) { inputs[i - 1].focus(); inputs[i - 1].value = ''; }
+        if (e.key === 'ArrowLeft' && i > 0) inputs[i - 1].focus();
+        if (e.key === 'ArrowRight' && i < LEN - 1) inputs[i + 1].focus();
+      });
+      inp.addEventListener('paste', (e) => { e.preventDefault(); fill((e.clipboardData.getData('text') || '').replace(/\D/g, ''), 0); });
+    });
+    function fill(digits, start) {
+      for (let k = 0; k < digits.length && start + k < LEN; k++) inputs[start + k].value = digits[k];
+      inputs[Math.min(LEN - 1, start + digits.length)].focus();
+      if (code().length === LEN) send();
+    }
+    const code = () => inputs.map((x) => x.value).join('');
+    let busy = false;
+    async function send() {
+      if (busy) return;
+      if (code().length !== LEN) { err.textContent = `กรุณากรอกรหัส ${LEN} หลัก`; return; }
+      busy = true; submit.disabled = true; submit.textContent = 'กำลังเชื่อมต่อ…'; err.textContent = '';
+      try {
+        const r = await api('/api/display/pair', { method: 'POST', body: { code: code() } });
+        localStorage.setItem('qms.display.token', r.token);
+        submit.textContent = `เชื่อมต่อสำเร็จ: ${r.device.name}`;
+        setTimeout(() => location.replace('/display'), 600);
+      } catch (e) {
+        err.textContent = e.message;
+        inputs.forEach((x) => { x.value = ''; });
+        inputs[0].focus();
+        submit.disabled = false; submit.textContent = 'เชื่อมต่อ';
+      } finally { busy = false; }
+    }
+    document.getElementById('form').addEventListener('submit', (e) => { e.preventDefault(); send(); });
+  </script>
+</body>
+</html>
