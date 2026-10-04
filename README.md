@@ -36,6 +36,33 @@ docker build -t queue-kiosk .
 docker run -d -p 3000:3000 -v queue-data:/data --name queue-kiosk queue-kiosk
 ```
 
+## ติดตั้งขึ้นเว็บไซต์จริง
+
+### วิธีที่ 1: Render (แนะนำ — ไม่ต้องดูแลเซิร์ฟเวอร์, ได้ HTTPS อัตโนมัติ)
+
+ไฟล์ `render.yaml` ตั้งค่าไว้ครบแล้ว (Docker, ภูมิภาค Singapore, Disk ถาวร 1 GB สำหรับฐานข้อมูล, Health check)
+
+1. สมัคร/เข้าสู่ระบบ https://dashboard.render.com แล้วเชื่อมบัญชี GitHub
+2. กด **New → Blueprint** → เลือก repo `ppgroup-queqemanagement` → เลือก branch ที่มีโค้ด → **Apply**
+3. รอ build ประมาณ 3–5 นาที จะได้ URL เช่น `https://queue-kiosk.onrender.com`
+4. เปิด `https://<URL>/admin` → สร้างบัญชีผู้ดูแลระบบ → เริ่มตั้งค่าร้าน
+
+> ใช้แพ็กเกจ **Starter** ขึ้นไป (ประมาณ $7/เดือน) เพราะต้องมี Disk ถาวร — แพ็กเกจฟรีจะลบฐานข้อมูลทุกครั้งที่รีสตาร์ท
+> QR Code และลิงก์ใน SMS ใช้ URL ของ Render อัตโนมัติ หากผูกโดเมนของร้านเอง (Settings → Custom Domains) ให้ใส่โดเมนนั้นใน Admin → ตั้งค่าร้าน → Public URL
+
+### วิธีที่ 2: VPS ของตัวเอง (Docker + Caddy HTTPS อัตโนมัติ)
+
+ชี้โดเมน (A record) มาที่ IP ของเครื่อง แล้วรันบนเครื่อง:
+
+```bash
+git clone https://github.com/purinutkit-creator/ppgroup-queqemanagement.git
+cd ppgroup-queqemanagement/deploy
+DOMAIN=queue.example.com docker compose up -d --build
+```
+
+ฐานข้อมูลอยู่ใน Docker volume `queue-data` — Backup ด้วย
+`docker compose cp app:/data ./backup`
+
 ### ตัวแปรแวดล้อม (Environment)
 
 | ตัวแปร | ค่าเริ่มต้น | คำอธิบาย |

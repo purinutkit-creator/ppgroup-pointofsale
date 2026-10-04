@@ -1,0 +1,27 @@
+# VPS deployment: Docker + Caddy (automatic HTTPS via Let's Encrypt)
+# Usage (on the server, in this folder):
+#   DOMAIN=queue.example.com docker compose up -d --build
+services:
+  app:
+    build: ..
+    restart: unless-stopped
+    environment:
+      DATA_DIR: /data
+      TRUST_PROXY: "1"
+      COOKIE_SECURE: "true"
+      PUBLIC_BASE_URL: https://${DOMAIN:?set DOMAIN, e.g. DOMAIN=queue.example.com}
+    volumes:
+      - queue-data:/data
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on: [app]
+volumes:
+  queue-data:
+  caddy-data:

@@ -1,4 +1,6 @@
 'use strict';
+// On Render the public https URL is provided automatically; use it for QR codes / SMS links.
+if (!process.env.PUBLIC_BASE_URL && process.env.RENDER_EXTERNAL_URL) process.env.PUBLIC_BASE_URL = process.env.RENDER_EXTERNAL_URL;
 const path = require('path');
 const express = require('express');
 const { DEFAULT_STORE_ID } = require('./db');

@@ -1,0 +1,20 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploy: Render Dashboard → New → Blueprint → select this repository.
+services:
+  - type: web
+    name: queue-kiosk
+    runtime: docker
+    plan: starter            # a paid instance is required for the persistent disk below
+    region: singapore        # closest Render region to Thailand
+    healthCheckPath: /healthz
+    envVars:
+      - key: DATA_DIR
+        value: /data
+      - key: TRUST_PROXY
+        value: "true"
+      - key: COOKIE_SECURE
+        value: "true"
+    disk:
+      name: queue-data       # SQLite database lives here and survives deploys/restarts
+      mountPath: /data
+      sizeGB: 1
